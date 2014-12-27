@@ -4,7 +4,7 @@ var renderer;
 var mesh;
  
 init();
-animate();
+//animate();
  
 function init() {
  
@@ -16,10 +16,12 @@ function init() {
     scene.add(light);
  
     var geometry = new THREE.CubeGeometry( 10, 10, 10);
-    var material = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+    var material = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30, opacity: 0.7, transparent: true } );
  
     mesh = new THREE.Mesh(geometry, material );
     mesh.position.z = -50;
+    mesh.rotation.x += .5;
+    mesh.rotation.y += .5;
     scene.add( mesh );
  
     renderer = new THREE.WebGLRenderer();
@@ -30,7 +32,9 @@ function init() {
  
     render();
 }
- 
+
+/*
+// animate
 function animate() {
     mesh.rotation.x += .04;
     mesh.rotation.y += .02;
@@ -38,6 +42,7 @@ function animate() {
     render();
     requestAnimationFrame( animate );
 }
+*/
  
 function render() {
     renderer.render( scene, camera );
