@@ -22,6 +22,9 @@ function init() {
     styles: styles
   });
 
+//new ThreejsLayer({ map: map }, function(layer){});
+  
+
   // if you add renderertype:'Canvas' to the options for ThreejsLayer, you can force the usage of CanvasRenderer
   new ThreejsLayer({ map: map }, function(layer){
     
@@ -39,7 +42,7 @@ function init() {
       });
       
       
-      photos.forEach(function (photo) {
+      data.forEach(function (photo) {
         var particle = new THREE.Sprite(material);
         var location = new google.maps.LatLng(photo[0], photo[1]),
           vertex = layer.fromLatLngToVertex(location);
@@ -55,7 +58,7 @@ function init() {
       texture = new THREE.Texture(generateSprite()),
       material, particles;
 
-    photos.forEach(function(photo){
+    data.forEach(function(photo){
       var location = new google.maps.LatLng(photo[0], photo[1]),
         vertex = layer.fromLatLngToVertex(location);
 
@@ -73,19 +76,19 @@ function init() {
       transparent: true
     });
 
-    particles = new THREE.ParticleSystem( geometry, material );
+    particles = new THREE.PointCloud( geometry, material );
     }
     layer.add( particles );
 
-    gui = new dat.GUI();
+    //gui = new dat.GUI();
 
     function update(){
       if (layer.renderertype=='Canvas' || !Detector.webgl)  material.map = new THREE.Texture(generateSprite(material.size));
       layer.render();
     }
 
-    gui.add(material, 'size', 2, 100).onChange(update);
-    gui.add(material, 'opacity', 0.1, 1).onChange(update);
+    //gui.add(material, 'size', 2, 100).onChange(update);
+    //gui.add(material, 'opacity', 0.1, 1).onChange(update);
 
   });
 }
