@@ -15,7 +15,7 @@ function init() {
     light.position.set( 0, 1, 1 ).normalize();
     scene.add(light);
  
-    var geometry = new THREE.CubeGeometry( 10, 10, 10);
+    var geometry = new THREE.BoxGeometry( 10, 10, 10);
     var material = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30 } );
  
     mesh = new THREE.Mesh(geometry, material );

@@ -1,7 +1,9 @@
 
-
-function init() {
-  var container = document.getElementById('map-div');
+var camera;
+var scene;
+var renderer;
+var mesh;
+var layer;
 
   /* Google Map options
 
@@ -13,6 +15,9 @@ function init() {
   MapTypeId.TERRAIN displays a physical map based on terrain information.
 
   */
+
+function initmap() {
+  var container = document.getElementById('map-div');
 
   var map = new google.maps.Map(container, {
     mapTypeControl: false,
@@ -67,7 +72,7 @@ function init() {
 
     texture.needsUpdate = true;
 
-    material = new THREE.ParticleBasicMaterial({
+    material = new THREE.PointCloudMaterial({
       size: 200,
       map: texture,
       opacity: 0.7,
@@ -80,16 +85,15 @@ function init() {
     }
     layer.add( particles );
 
-    //gui = new dat.GUI();
+    // add gui
+    gui = new dat.GUI();
+    gui.add(material, 'size', 2, 100).onChange(update);
+    gui.add(material, 'opacity', 0.1, 1).onChange(update);
 
     function update(){
       if (layer.renderertype=='Canvas' || !Detector.webgl)  material.map = new THREE.Texture(generateSprite(material.size));
       layer.render();
     }
-
-    //gui.add(material, 'size', 2, 100).onChange(update);
-    //gui.add(material, 'opacity', 0.1, 1).onChange(update);
-
   });
 }
 
@@ -116,8 +120,56 @@ function generateSprite(size) {
   return canvas;
 }
 
-document.addEventListener('DOMContentLoaded', init, false);
+ 
+function initcube() {
+ 
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000);
+ 
+    var light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( 0, 1, 1 ).normalize();
+    scene.add(light);
+ 
+    var cubegeometry = new THREE.BoxGeometry( 10, 10, 10);
+    var cubematerial = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+ 
+    mesh = new THREE.Mesh(cubegeometry, cubematerial );
+    mesh.position.z = -50;
+    scene.add( mesh );
+ 
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.getElementById('map-div').appendChild( renderer.domElement );
+ 
+    window.addEventListener( 'resize', onWindowResize, false );
+ 
+    render();
+    animate();
+}
+ 
+function animate() {
+    mesh.rotation.x += .04;
+    mesh.rotation.y += .02;
+    scene.add( mesh );
+ 
+    render();
+    requestAnimationFrame( animate );
+}
+ 
+function render() {
+    renderer.render( scene, camera );
+}
+ 
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    render();
+}
 
+//switch between map and cube
+document.addEventListener('DOMContentLoaded', initmap, false);
+//document.addEventListener('DOMContentLoaded', initcube, false);
 
 /* cube render */
 /*
@@ -138,7 +190,7 @@ function init() {
     light.position.set( 0, 1, 1 ).normalize();
     scene.add(light);
  
-    var geometry = new THREE.CubeGeometry( 10, 10, 10);
+    var geometry = new THREE.BoxGeometry( 10, 10, 10);
     var material = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30 } );
  
     mesh = new THREE.Mesh(geometry, material );
@@ -172,4 +224,5 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     render();
 }
+
 * */
