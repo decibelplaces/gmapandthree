@@ -58,40 +58,54 @@ function initmap() {
         material.size = 20;
       });
     } else {
-    // render with webgl
-    var geometry = new THREE.Geometry(),
-      texture = new THREE.Texture(generateSprite()),
-      material, particles;
+      // render with webgl
 
-    data.forEach(function(photo){
-      var location = new google.maps.LatLng(photo[0], photo[1]),
-        vertex = layer.fromLatLngToVertex(location);
+      //particles
+      /*
+      var geometry = new THREE.Geometry(),
+        texture = new THREE.Texture(generateSprite()),
+        material, particles;
 
-      geometry.vertices.push( vertex );
-    });
+      data.forEach(function(photo){
+        var location = new google.maps.LatLng(photo[0], photo[1]),
+          vertex = layer.fromLatLngToVertex(location);
 
-    texture.needsUpdate = true;
+        geometry.vertices.push( vertex );
+      });
 
-    material = new THREE.PointCloudMaterial({
-      size: 200,
-      map: texture,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthTest: false,
-      transparent: true
-    });
+      texture.needsUpdate = true;
 
-    particles = new THREE.PointCloud( geometry, material );
+      material = new THREE.PointCloudMaterial({
+        size: 200,
+        map: texture,
+        opacity: 0.7,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
+        transparent: true
+      });
+
+      particles = new THREE.PointCloud( geometry, material );
+      * */
+
+      // cube
+      var cubegeometry = new THREE.BoxGeometry( 10, 10, 10);
+    var cubematerial = new THREE.MeshPhongMaterial( { ambient: 0x050505, color: 0x0033ff, specular: 0x555555, shininess: 30 } );
+ 
+    mesh = new THREE.Mesh(cubegeometry, cubematerial );
+    mesh.position.z = -50;
+    //scene.add( mesh );
     }
-    layer.add( particles );
+    layer.add( mesh );
 
     // add gui
+    /*
     gui = new dat.GUI();
     gui.add(material, 'size', 2, 100).onChange(update);
     gui.add(material, 'opacity', 0.1, 1).onChange(update);
+    */
 
     function update(){
-      if (layer.renderertype=='Canvas' || !Detector.webgl)  material.map = new THREE.Texture(generateSprite(material.size));
+      if (layer.renderertype=='Canvas' || !Detector.webgl)  material.map = mesh; //new THREE.Texture(generateSprite(material.size));
       layer.render();
     }
   });
